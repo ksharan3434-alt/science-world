@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science World | Managed by RK Physics</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #030611;
+            overflow-x: hidden;
+        }
+        .glow-blue {
+            text-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+        }
+        .glow-card:hover {
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        section {
+            position: relative;
+            z-index: 10;
+        }
+        /* FAQ Dropdown Animation Class */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+        .faq-active .faq-answer {
+            max-height: 300px;
+            padding-top: 1.25rem;
+        }
+        .faq-active .faq-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="text-gray-200 selection:bg-blue-600 selection:text-white">
+
+    <!-- Interactive Blue Particle Background Layer -->
+    <canvas id="physicsCanvas"></canvas>
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#030611]/80 backdrop-blur-xl border-b border-gray-900/60">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- RKP Shield Inspired Brand Identity -->
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-full border-2 border-blue-500 flex items-center justify-center bg-gradient-to-b from-blue-500/20 to-transparent shadow-md shadow-blue-500/10">
+                    <span class="text-sm font-black text-blue-500 tracking-tighter">RKP</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-2xl font-black tracking-wider text-white leading-none">SCIENCE<span class="text-blue-500">WORLD</span></span>
+                    <span class="text-[10px] text-gray-400 tracking-widest uppercase mt-1 font-semibold">Managed by RK Physics</span>
+                </div>
+            </div>
+            
+            <nav class="hidden lg:flex space-x-8 font-medium text-sm tracking-wide">
+                <a href="#home" class="hover:text-blue-400 transition-colors">Home</a>
+                <a href="#about" class="hover:text-blue-400 transition-colors">About RK Sharan</a>
+                <a href="#offline" class="hover:text-blue-400 transition-colors">Offline Batches</a>
+                <a href="#whyus" class="hover:text-blue-400 transition-colors">Why Choose Us</a>
+                <a href="#faq" class="hover:text-blue-400 transition-colors">FAQs</a>
+            </nav>
+            
+            <div class="flex items-center space-x-3">
+                <a href="tel:7654137037" class="hidden sm:flex border border-gray-800 hover:border-blue-500 bg-gray-900/40 text-gray-300 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm transition-all gap-2 items-center">
+                    <i class="fa-solid fa-phone text-blue-500"></i> Call Us
+                </a>
+                <a href="https://joyful-marshmallow-896e85.netlify.app/" target="_blank" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-600/20 flex items-center gap-2 group">
+                    Buy Batch <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center pt-32 pb-16">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <span class="bg-blue-950/60 text-blue-400 border border-blue-900/60 text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full inline-block mb-8">
+                ✨ Science World First Year × 15+ Years RK Physics Elite Trust
+            </span>
+            <h1 class="text-4xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight">
+                Learn from the Masters. <br>Managed by <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 glow-blue">RK Physics</span>
+            </h1>
+            <p class="text-gray-400 text-base md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
+                Science World steps into its premier first year, backed 100% by the glorious **15+ Years Legacy of RK Physics**. We bridge the gap between high-profile conceptual theories and competitive dominance.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="https://wa.me/917654137037" target="_blank" class="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl shadow-green-600/20 flex items-center justify-center gap-3">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> Join via WhatsApp Chat
+                </a>
+                <a href="#offline" class="w-full sm:w-auto border border-gray-800 hover:border-blue-500 bg-gray-900/20 backdrop-blur text-gray-300 hover:text-white px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-location-dot text-blue-500"></i> Explore Offline Batches
+                </a>
+            </div>
+            
+            <!-- Statistical Counter Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 max-w-4xl mx-auto border-t border-gray-900/80 pt-10">
+                <div>
+                    <div class="text-3xl md:text-5xl font-black text-blue-500">15+ Yrs</div>
+                    <div class="text-xs text-gray-400 mt-2 uppercase tracking-wider font-semibold">RK Physics Legacy</div>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-5xl font-black text-blue-500">10+ Yrs</div>
+                    <div class="text-xs text-gray-400 mt-2 uppercase tracking-wider font-semibold">Faculty Minimum Exp</div>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-5xl font-black text-blue-500">Elite</div>
+                    <div class="text-xs text-gray-400 mt-2 uppercase tracking-wider font-semibold">Professors & Engineers</div>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-5xl font-black text-blue-500">50K+</div>
+                    <div class="text-xs text-gray-400 mt-2 uppercase tracking-wider font-semibold">Successful Alumni</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultra-Detailed About Us Section (Biographical Layout inspired by image_25cc20.png) -->
+    <section id="about" class="py-28 bg-[#050a18]/90 border-t border-b border-gray-900/80">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <!-- Left Column Circular Graphics Module from image_25cc20.png -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-85 h-85 rounded-full border-4 border-dashed border-blue-500/30 p-5 flex items-center justify-center animate-spin [animation-duration:50s]">
+                        <div class="w-full h-full rounded-full bg-gradient-to-tr from-blue-600 via-indigo-900 to-slate-950 flex flex-col items-center justify-center text-white relative shadow-2xl overflow-hidden [transform:rotate(-60deg)]">
+                            <i class="fa-solid fa-shield-halved text-6xl mb-3 text-blue-300"></i>
+                            <span class="text-2xl font-black tracking-widest">RK SHARAN</span>
+                            <span class="text-xs text-blue-400 font-bold uppercase tracking-widest mt-1">Physics Pioneer</span>
+                            <div class="absolute inset-0 bg-black/10 mix-blend-overlay"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column Deep Biographical Layout -->
+                <div class="lg:col-span-7 space-y-6">
+                    <span class="text-blue-500 font-bold tracking-widest uppercase text-xs block">Legacy of Excellence & True Guidance</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">The Vision of Ranbir Kumar Sharan Sir</h2>
+                    
+                    <p class="text-gray-300 leading-relaxed text-sm md:text-base">
+                        Founded and directly steered by <strong class="text-white">Ranbir Kumar Sharan (RK Sharan Sir)</strong>, Science World represents the natural expansion of a brilliant pedagogical journey. For over <strong class="text-blue-400">15+ magnificent years</strong>, RK Sharan Sir has been a legendary name in Physics education, breaking down intimidating formulas into intuitive, real-world visualizations. 
+                    </p>
+                    
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        With Science World entering its magnificent first year, RK Sharan Sir has integrated his legendary methodology into a unified core science destination. Under his direct leadership, students across Physics, Chemistry, Mathematics, and Biology learn through synchronized, conceptual models. His proven legacy has empowered <strong class="text-white">over 50,000+ successful alumni</strong> to secure top ranks in engineering and medical fields nationwide.
+                    </p>
+
+                    <div class="p-6 bg-blue-950/20 border border-blue-900/40 rounded-2xl space-y-2">
+                        <h4 class="text-white font-bold text-base flex items-center gap-2">
+                            <i class="fa-solid fa-scroll text-blue-500"></i> Words from Director RK Sharan:
+                        </h4>
+                        <p class="text-xs text-gray-400 italic">
+                            "Science World represents a commitment where we eliminate standard rote-learning cycles. Every classroom lecture is designed to build analytical capabilities so that facing national competitive environments becomes second nature to our students."
+                        </p>
+                    </div>
+
+                    <!-- Layout Nodes from image_25cc20.png -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-900">
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 text-base"></i>
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Personalized Mentorship</h4>
+                                <p class="text-gray-500 text-xs mt-1">Custom focus frameworks optimized directly based on real-time diagnostic performance indicators.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 text-base"></i>
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Comprehensive Test Series</h4>
+                                <p class="text-gray-500 text-xs mt-1">Bi-weekly simulated examination parameters matching exact modern competitive standards.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: Dedicated Offline Batches & Infrastructure -->
+    <section id="offline" class="py-28 bg-[#030611]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-blue-500 font-bold uppercase tracking-widest text-xs block">Traditional Classroom Rigor</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-white">High-Octane Offline Batches</h2>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+                        Nothing replaces the fierce energy and focus of an offline classroom. At Science World, our **Offline Classroom Batches** deliver an immersive learning experience under the direct personal supervision of RK Sharan Sir and our senior faculty members.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 bg-gray-900/40 p-4 border border-gray-900 rounded-xl">
+                            <div class="w-10 h-10 bg-blue-600/10 text-blue-400 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Limited Batch Strength</h4>
+                                <p class="text-gray-500 text-xs">Optimized student-to-teacher ratio for dedicated individual attention.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-gray-900/40 p-4 border border-gray-900 rounded-xl">
+                            <div class="w-10 h-10 bg-blue-600/10 text-blue-400 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-clipboard-question"></i></div>
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Face-to-Face Doubt Clearing</h4>
+                                <p class="text-gray-500 text-xs">Dedicated desk hours immediately after classes to resolve complex numerical queries instantly.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-gray-900/40 p-4 border border-gray-900 rounded-xl">
+                            <div class="w-10 h-10 bg-blue-600/10 text-blue-400 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-book-open-reader"></i></div>
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Physical DPPS & Study Material</h4>
+                                <p class="text-gray-500 text-xs">Premium printed worksheets, standard question banks, and custom reference sheets.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Offline Batch Admission CTA Box -->
+                <div class="lg:col-span-6 bg-gradient-to-b from-gray-900/50 to-slate-950/80 border border-gray-800 p-8 rounded-3xl text-center space-y-6">
+                    <div class="inline-block bg-blue-900/40 border border-blue-800 text-blue-400 text-xs px-4 py-1.5 rounded-full font-bold uppercase tracking-wider">
+                        Offline Admissions Open
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-white">Reserve Your Offline Classroom Seat</h3>
+                    <p class="text-gray-400 text-xs max-w-md mx-auto leading-relaxed">
+                        Seats for physical classroom coaching batches under RK Sharan Sir are strictly limited to preserve instructional quality. Walk in or call our registration desk to secure admission.
+                    </p>
+                    <div class="p-4 bg-gray-900/80 border border-gray-800 rounded-xl max-w-sm mx-auto">
+                        <span class="text-xs text-gray-500 block uppercase font-bold mb-1">Direct Helpdesk Number</span>
+                        <a href="tel:7654137037" class="text-2xl font-black text-blue-500 hover:underline tracking-wider">+91 7654137037</a>
+                    </div>
+                    <p class="text-[11px] text-gray-500">Visit our center for a free orientation program and conceptual counseling.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Subjects Department Section -->
+    <section id="subjects" class="py-24 bg-[#050a18]/40 border-t border-b border-gray-900/60">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-blue-500 font-bold uppercase tracking-widest text-xs block mb-2">Academic Coverage</span>
+                <h2 class="text-3xl md:text-5xl font-black text-white">Comprehensive Science Departments</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-[#0b1122]/90 border border-gray-800 p-6 rounded-2xl transition-all duration-300 glow-card">
+                    <div class="text-blue-500 mb-4 text-3xl"><i class="fa-solid fa-atom animate-pulse"></i></div>
+                    <h3 class="text-lg font-bold text-white mb-2">Physics Department</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">Personally curated and supervised by RK Sharan Sir. Deep analytical tracking designed to simplify advanced mechanics and electrodynamics.</p>
+                </div>
+                <div class="bg-[#0b1122]/90 border border-gray-800 p-6 rounded-2xl transition-all duration-300 glow-card">
+                    <div class="text-blue-400 mb-4 text-3xl"><i class="fa-solid fa-flask"></i></div>
+                    <h3 class="text-lg font-bold text-white mb-2">Chemistry Department</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">Led by senior professors. Deep conceptual breakdowns for complex Organic Reaction Mechanisms and Physical Chemistry derivations.</p>
+                </div>
+                <div class="bg-[#0b1122]/90 border border-gray-800 p-6 rounded-2xl transition-all duration-300 glow-card">
+                    <div class="text-blue-500 mb-4 text-3xl"><i class="fa-solid fa-calculator"></i></div>
+                    <h3 class="text-lg font-bold text-white mb-2">Mathematics Unit</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">Supervised by elite technical engineers. Mastering speed calculations across Calculus, Vectors, and 3D coordinate spaces effortlessly.</p>
+                </div>
+                <div class="bg-[#0b1122]/90 border border-gray-800 p-6 rounded-2xl transition-all duration-300 glow-card">
+                    <div class="text-blue-400 mb-4 text-3xl"><i class="fa-solid fa-dna"></i></div>
+                    <h3 class="text-lg font-bold text-white mb-2">Biological Sciences</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">High-yield NCERT structural flowcharts prepared by medical teaching veterans to optimize core scores for NEET entrance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section (Enhanced Standards) -->
+    <section id="whyus" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-blue-500 font-bold uppercase tracking-widest text-xs block mb-2">The Institute Standards</span>
+                <h2 class="text-3xl md:text-5xl font-black text-white">Why Science World Standing is Absolute</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-[#0b1122]/90 border border-gray-800 p-8 rounded-2xl glow-card transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-600/10 text-blue-500 flex items-center justify-center mb-6 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">10+ Years Veteran Faculty</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Every teacher leading a department at Science World comes with a minimum 10-year track record. Our roster features seasoned industry-leading Engineers and senior College Professors.</p>
+                </div>
+                <div class="bg-[#0b1122]/90 border border-gray-800 p-8 rounded-2xl glow-card transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-600/10 text-blue-500 flex items-center justify-center mb-6 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Dual-Layer Doubt Engines</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Students never carry confusion home. Beyond formal lecture periods, structured concept clearing slots run seamlessly to isolate and correct minor analytical flaws.</p>
+                </div>
+                <div class="bg-[#0b1122]/90 border border-gray-800 p-8 rounded-2xl glow-card transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-600/10 text-blue-500 flex items-center justify-center mb-6 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Integrated Performance Analytics</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Our evaluation procedures exactly duplicate national competitive test environments. Clear analytics highlight precise areas that require immediate revision loops.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section (Most Important Questions) -->
+    <section id="faq" class="py-24 bg-[#050a18]/50 border-t border-b border-gray-900/60">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-blue-500 font-bold uppercase tracking-widest text-xs block mb-2">Got Questions?</span>
+                <h2 class="text-3xl md:text-4xl font-black text-white">Most Important Institute FAQs</h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-[#0b1122] border border-gray-800 rounded-xl p-5 cursor-pointer transition-all" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-base md:text-lg font-bold text-white">Science World aur RK Physics me kya relation hai?</h3>
+                        <i class="fa-solid fa-chevron-down text-blue-500 faq-icon transition-transform"></i>
+                    </div>
+                    <div class="faq-answer text-gray-400 text-sm leading-relaxed">
+                        RK Physics ek highly reputed 15+ years purana premium institute brand h jise khud RK Sharan Sir lead karte hain. Science World usi unshakeable core legacy ka ek advanced multi-subject hub extension h, jise complete RK Physics ki management team control aur operate karti h.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-[#0b1122] border border-gray-800 rounded-xl p-5 cursor-pointer transition-all" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-base md:text-lg font-bold text-white">Kya Science World me Offline Classroom classes chalti hain?</h3>
+                        <i class="fa-solid fa-chevron-down text-blue-500 faq-icon transition-transform"></i>
+                    </div>
+                    <div class="faq-answer text-gray-400 text-sm leading-relaxed">
+                        Haan, bilkul! Science World me complete full-time Offline Batches chalti hain jahan students face-to-face interaction, physical classroom training study modules aur real-time desk doubt support ke sath pure system me padhai karte hain.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-[#0b1122] border border-gray-800 rounded-xl p-5 cursor-pointer transition-all" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-base md:text-lg font-bold text-white">Yahan ke teachers ki academic qualifications aur background kya hai?</h3>
+                        <i class="fa-solid fa-chevron-down text-blue-500 faq-icon transition-transform"></i>
+                    </div>
+                    <div class="faq-answer text-gray-400 text-sm leading-relaxed">
+                        Hamari faculty team me keval wahi educators shamil hain jinka standalone track record kam se kam 10+ years ka h. Faculty profiles me senior university core Professors aur top tier high-credential Engineers shamil hain jo numericals ko bypass karne ke advanced dynamic frameworks sikhate hain.
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-[#0b1122] border border-gray-800 rounded-xl p-5 cursor-pointer transition-all" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-base md:text-lg font-bold text-white">Online batches ko buy aur access kaise karein?</h3>
+                        <i class="fa-solid fa-chevron-down text-blue-500 faq-icon transition-transform"></i>
+                    </div>
+                    <div class="faq-answer text-gray-400 text-sm leading-relaxed">
+                        Online batch coordination aur purchase validation ke liye aap upar diye gaye "Buy Batch" button par tap karke hamare direct verification application network (Netlify checkout app portal) par ja sakte hain.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Space -->
+    <footer class="bg-[#020409] border-t border-gray-900 py-16 relative z-10">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+            <div class="space-y-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-black text-blue-500 border border-blue-500 px-2 py-0.5 rounded">RKP</span>
+                    <span class="text-xl font-bold text-white">SCIENCE<span class="text-blue-500">WORLD</span></span>
+                </div>
+                <p class="text-gray-500 text-xs">A unified academic ecosystem structured and managed under the supervision of RK Physics administration.</p>
+            </div>
+
+            <!-- WhatsApp Core Center Widget -->
+            <div class="bg-emerald-950/20 border border-emerald-900/40 p-5 rounded-2xl text-center space-y-3">
+                <div class="w-9 h-9 bg-green-500/10 text-green-400 rounded-full flex items-center justify-center mx-auto text-lg">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white">Direct Offline & Online Helpdesk</h4>
+                <a href="https://wa.me/917654137037" target="_blank" class="block text-xl font-black text-green-400 hover:underline tracking-wide">
+                    +91 7654137037
+                </a>
+            </div>
+
+            <div class="flex flex-col md:items-end space-y-2 text-xs text-gray-500">
+                <div class="flex space-x-4 text-base mb-2">
+                    <a href="https://www.youtube.com/@r.k.physics1" target="_blank" class="hover:text-red-500 transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://wa.me/917654137037" target="_blank" class="hover:text-green-500 transition-colors"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+                <p>&copy; 2026 Science World. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Particle Array Processing Script -->
+    <script>
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        const numberOfParticles = 80;
+        const mouse = { x: null, y: null, radius: 140 }
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        initCanvas();
+        window.addEventListener('resize', initCanvas);
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.6;
+                this.speedY = (Math.random() - 0.5) * 0.6;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+
+                if (mouse.x != null && mouse.y != null) {
+                    let dx = this.x - mouse.x;
+                    let dy = this.y - mouse.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius) {
+                        let force = (mouse.radius - distance) / mouse.radius;
+                        this.x += (dx / distance) * force * 2;
+                        this.y += (dy / distance) * force * 2;
+                    }
+                }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function setup() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) particlesArray.push(new Particle());
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let dx = particlesArray[a].x - particlesArray[b].x;
+                    let dy = particlesArray[a].y - particlesArray[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 130) {
+                        let opacity = 1 - (distance / 130);
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.2})`;
+                        ctx.lineWidth = 0.6;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+
+        // FAQ Toggle Controller
+        function toggleFaq(element) {
+            const isActive = element.classList.contains('faq-active');
+            document.querySelectorAll('#faq .faq-active').forEach(item => item.classList.remove('faq-active'));
+            if (!isActive) {
+                element.classList.add('faq-active');
+            }
+        }
+
+        setup();
+        animate();
+    </script>
+</body>
+</html>
