@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --surface-alt:#f8f9fa;
+    --search-bg:#f1f3f4;
+    --border:#e8eaed;
+    --text:#202124;
+    --text-dim:#5f6368;
+    --accent:#0b8043;
+    --accent-dim:#e6f4ea;
+    --star:#ff9800;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:'Roboto',sans-serif;padding-bottom:64px;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex;align-items:center;gap:14px;
+    padding:10px 14px;position:sticky;top:0;background:#fff;z-index:30;
+  }
+  .icon-btn{
+    width:40px;height:40px;border-radius:50%;border:none;background:none;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+    transition:background .15s ease,transform .1s ease;
+  }
+  .icon-btn:hover{background:var(--surface-alt);}
+  .icon-btn:active{transform:scale(.9);}
+  .search-bar{
+    flex:1;display:flex;align-items:center;gap:10px;
+    background:var(--search-bg);border-radius:24px;padding:9px 16px;
+  }
+  .search-bar input{
+    border:none;background:none;outline:none;flex:1;font-size:15px;color:var(--text);font-family:inherit;
+  }
+  .search-bar input::placeholder{color:var(--text-dim);}
+  .brand-mark{
+    width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+    font-size:16px;background:linear-gradient(135deg,#1ba97f,#0b8043);flex-shrink:0;overflow:hidden;
+  }
+  .brand-mark img{width:100%;height:100%;object-fit:cover;}
+
+  /* ---------- Tabs ---------- */
+  .tabs{
+    display:flex;gap:26px;padding:0 16px;overflow-x:auto;border-bottom:1px solid var(--border);
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    padding:14px 2px 12px;font-size:14px;font-weight:500;color:var(--text-dim);
+    white-space:nowrap;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;
+  }
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700;}
+
+  main{max-width:960px;margin:0 auto;padding-bottom:24px;}
+  .view-panel{display:none;}
+  .view-panel.active{display:block;animation:viewIn .22s cubic-bezier(.22,.61,.36,1);}
+  @keyframes viewIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- Section headers ---------- */
+  .section{padding:20px 16px 4px;}
+  .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .section-head h2{font-size:17px;margin:0;font-weight:400;color:var(--text);}
+  .section-head .arrow{color:var(--text-dim);font-size:18px;}
+
+  /* ---------- Horizontal carousel ---------- */
+  .hrow{
+    display:flex;gap:18px;overflow-x:auto;padding:14px 16px 6px;scrollbar-width:none;
+  }
+  .hrow::-webkit-scrollbar{display:none;}
+  .hcard{width:104px;flex-shrink:0;cursor:pointer;transition:transform .15s ease;}
+  .hcard:active{transform:scale(.96);}
+  .hcard .icon{
+    width:104px;height:104px;border-radius:18px;object-fit:cover;background:var(--surface-alt);
+    border:1px solid var(--border);
+  }
+  .hcard .name{font-size:13px;margin-top:8px;line-height:1.3;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .hcard .rating{font-size:12.5px;color:var(--text-dim);margin-top:2px;}
+  .hcard .rating .star{color:var(--star);}
+
+  /* ---------- Promo banner ---------- */
+  .banner{
+    margin:18px 16px;border-radius:18px;padding:22px;position:relative;overflow:hidden;
+    min-height:110px;display:flex;flex-direction:column;justify-content:center;
+    background:linear-gradient(120deg,#ff6659,#c1272d);color:#fff;background-size:cover;background-position:center;
+  }
+  .banner .btitle{font-size:19px;font-weight:700;max-width:70%;line-height:1.3;}
+  .banner .bsub{font-size:12.5px;opacity:.85;margin-top:6px;max-width:70%;}
+  .banner .deco{
+    position:absolute;right:18px;top:50%;transform:translateY(-50%);
+    width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.22);
+    display:flex;align-items:center;justify-content:center;font-size:26px;
+  }
+
+  /* ---------- Grid section ---------- */
+  .grid{display:flex;flex-direction:column;gap:2px;padding:6px 6px 10px;}
+  .grow{
+    display:flex;align-items:center;gap:14px;padding:10px 10px;border-radius:12px;cursor:pointer;
+    transition:background .15s ease,transform .1s ease;
+  }
+  .grow:hover{background:var(--surface-alt);}
+  .grow:active{transform:scale(.98);background:var(--surface-alt);}
+  .grow img{width:56px;height:56px;border-radius:14px;object-fit:cover;background:var(--surface-alt);border:1px solid var(--border);flex-shrink:0;}
+  .grow .info{flex:1;min-width:0;}
+  .grow .info .name{font-size:14.5px;font-weight:500;}
+  .grow .info .cat{font-size:12.5px;color:var(--text-dim);margin-top:1px;}
+  .grow .rating{font-size:13px;color:var(--text-dim);white-space:nowrap;}
+  .grow .rating .star{color:var(--star);}
+  .grow .rank{width:20px;font-size:14px;color:var(--text-dim);font-weight:700;text-align:center;flex-shrink:0;}
+
+  .chip-grid{display:flex;flex-wrap:wrap;gap:10px;padding:16px;}
+  .cat-chip{
+    padding:10px 18px;border-radius:100px;border:1px solid var(--border);background:#fff;
+    font-size:14px;cursor:pointer;color:var(--text);transition:background .15s ease,border-color .15s ease,color .15s ease,transform .1s ease;
+  }
+  .cat-chip:active{transform:scale(.95);}
+  .cat-chip.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);font-weight:700;}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--text-dim);}
+
+  /* ---------- Bottom nav ---------- */
+  .bottomnav{
+    position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);
+    display:flex;z-index:30;
+  }
+  .bottomnav button{
+    flex:1;background:none;border:none;padding:8px 4px 10px;display:flex;flex-direction:column;
+    align-items:center;gap:3px;cursor:pointer;color:var(--text-dim);
+  }
+  .bottomnav button .bn-icon{font-size:20px;}
+  .bottomnav button .bn-label{font-size:11px;}
+  .bottomnav button.active{color:var(--accent);}
+  .bottomnav button.active .bn-icon{
+    background:var(--accent-dim);padding:3px 16px;border-radius:16px;
+  }
+
+  /* ---------- Drawer ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40;display:none;}
+  .scrim.open{display:block;}
+  .drawer{
+    position:fixed;top:0;left:0;bottom:0;width:270px;background:#fff;z-index:41;
+    transform:translateX(-100%);transition:transform .2s ease;padding:20px 0;overflow-y:auto;
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer .dhead{display:flex;align-items:center;gap:12px;padding:8px 20px 20px;}
+  .drawer .dhead .brand-mark{width:34px;height:34px;font-size:19px;}
+  .drawer .dhead .dname{font-size:17px;font-weight:700;}
+  .drawer a, .drawer button.dlink{
+    display:block;width:100%;text-align:left;padding:12px 20px;font-size:14.5px;border:none;background:none;
+    cursor:pointer;color:var(--text);transition:background .15s ease;
+  }
+  .drawer a:hover, .drawer button.dlink:hover{background:var(--surface-alt);}
+  .drawer a:active, .drawer button.dlink:active{background:var(--accent-dim);}
+
+  /* ---------- App detail page (opens as its own page, not a popup) ---------- */
+  .overlay{
+    position:fixed;inset:0;background:#fff;z-index:50;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    transform:translate3d(100%,0,0);transition:transform .32s cubic-bezier(.22,.61,.36,1);
+    will-change:transform;overscroll-behavior:contain;
+  }
+  .overlay.open{transform:translate3d(0,0,0);}
+  .modal{
+    background:#fff;width:100%;max-width:640px;margin:0 auto;min-height:100%;padding:0 0 32px;position:relative;
+  }
+  .modal-topbar{position:sticky;top:0;background:#fff;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:14px 10px;}
+  .modal-topbar .side{display:flex;align-items:center;gap:2px;}
+  .modal-topbar button{width:36px;height:36px;border-radius:50%;border:none;background:none;font-size:18px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s ease,transform .1s ease;}
+  .modal-topbar button:hover{background:var(--surface-alt);}
+  .modal-topbar button:active{transform:scale(.9);}
+  .modal-body{padding:0 22px;}
+  .modal-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px;}
+  .modal-head img{width:74px;height:74px;border-radius:18px;object-fit:cover;border:1px solid var(--border);}
+  .modal-head h2{margin:0 0 4px;font-size:19px;font-weight:500;line-height:1.25;}
+  .modal-head .dev{font-size:13px;color:var(--accent);font-weight:500;}
+  .modal-head .sub{font-size:12px;color:var(--text-dim);margin-top:2px;}
+  .stat-row{display:flex;align-items:stretch;justify-content:space-around;text-align:center;margin:18px 0;}
+  .stat-row .stat{flex:1;padding:0 8px;}
+  .stat-row .stat:not(:last-child){border-right:1px solid var(--border);}
+  .stat-row .stat .top{font-size:15px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:3px;}
+  .stat-row .stat .top .star{color:var(--star);font-size:13px;}
+  .stat-row .stat .bottom{font-size:11.5px;color:var(--text-dim);margin-top:2px;}
+  .modal-desc{color:var(--text-dim);font-size:14px;line-height:1.6;margin-bottom:18px;white-space:pre-wrap;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+  .info-box{background:var(--surface-alt);border-radius:10px;padding:10px 12px;}
+  .info-box .label{font-size:11px;color:var(--text-dim);}
+  .info-box .val{font-size:14px;font-weight:700;}
+  .sect-head{display:flex;align-items:center;justify-content:space-between;margin:26px 0 12px;cursor:default;}
+  .sect-head h3{margin:0;font-size:17px;font-weight:500;}
+  .sect-head .arrow{color:var(--text-dim);font-size:19px;}
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px;}
+  .info-chip{border:1px solid var(--border);border-radius:100px;padding:7px 16px;font-size:12.5px;color:var(--text);}
+  .rr-wrap{display:flex;gap:22px;align-items:center;}
+  .rr-score{text-align:left;flex-shrink:0;}
+  .rr-score .num{font-size:38px;font-weight:400;line-height:1;font-family:'Fraunces',serif,sans-serif;}
+  .rr-score .stars{color:var(--star);font-size:13px;margin-top:6px;}
+  .rr-score .count{font-size:11.5px;color:var(--text-dim);margin-top:2px;}
+  .rr-bars{flex:1;display:flex;flex-direction:column;gap:5px;}
+  .rr-bars .brow{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-dim);}
+  .rr-bars .brow .btrack{flex:1;height:6px;background:var(--surface-alt);border-radius:6px;overflow:hidden;}
+  .rr-bars .brow .bfill{height:100%;background:var(--star);border-radius:6px;}
+  .btn{
+    width:100%;padding:13px;border-radius:24px;border:none;background:var(--accent);
+    color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:background .15s ease,transform .1s ease;
+  }
+  .btn:hover{background:#096b37;}
+  .btn:active{transform:scale(.98);}
+  .rate-row{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:18px;border-top:1px solid var(--border);}
+  .rate-label{font-size:13.5px;color:var(--text-dim);}
+  .star-input{display:flex;gap:4px;font-size:22px;cursor:pointer;}
+  .star-input span{color:#dadce0;}
+  .star-input span.filled{color:var(--star);}
+
+  .toast{
+    position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
+    background:#323232;color:#fff;padding:12px 20px;border-radius:8px;font-size:13.5px;z-index:100;
+    opacity:0;pointer-events:none;transition:opacity .2s ease;
+  }
+  .toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="scrim" id="scrim"></div>
+<div class="drawer" id="drawer">
+  <div class="dhead">
+    <div class="brand-mark" id="drawerLogo">🧪</div>
+    <div class="dname">Science World</div>
+  </div>
+  <button class="dlink" data-nav="home">Home</button>
+  <button class="dlink" data-nav="myapps">My Apps</button>
+  <button class="dlink" data-nav="categories">Categories</button>
+  <button class="dlink" data-nav="top">Top Charts</button>
+  <button class="dlink" data-nav="account">About / Account</button>
+  <a class="dlink" href="admin.html">Admin panel</a>
+</div>
+
+<header class="topbar">
+  <button class="icon-btn" id="menuBtn">☰</button>
+  <div class="search-bar">
+    <span style="color:var(--text-dim);">🔍</span>
+    <input id="searchInput" type="text" placeholder="Science World me khojo">
+  </div>
+  <div class="brand-mark" id="headerLogo">🧪</div>
+</header>
+
+<div class="tabs" id="tabs">
+  <button class="tab active" data-tab="foryou">For You</button>
+  <button class="tab" data-tab="top">Top Charts</button>
+  <button class="tab" data-tab="new">New</button>
+  <button class="tab" data-tab="categories">Categories</button>
+</div>
+
+<main id="mainContent">
+
+  <!-- HOME VIEW -->
+  <div id="view-home" class="view-panel active">
+
+    <div id="updatesBanner" style="display:none;margin:14px 16px 4px;border-radius:16px;border:2px solid #ff9800;background:#fff3e0;padding:14px 16px;">
+      <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:#e65100;">
+        <span style="font-size:18px;">⚠️</span><span id="updatesCount">0 updates available</span>
+      </div>
+      <div id="updatesList" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h2>New &amp; updated apps</h2><span class="arrow">›</span></div>
+    </div>
+    <div class="hrow" id="newRow"></div>
+
+    <div class="banner" id="promoBanner">
+      <div class="btitle" id="bannerTitle">Naye apps ka khazana</div>
+      <div class="bsub" id="bannerSub">Padhaai ke kaam ki har app, ek jagah</div>
+      <div class="deco">🚀</div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h2 id="feedTitle">Suggested for you</h2></div>
+    </div>
+    <div class="grid" id="feedGrid"></div>
+    <div class="empty" id="emptyState" style="display:none;">
+      <p>Koi app nahi mili</p>
+    </div>
+  </div>
+
+  <!-- CATEGORIES VIEW -->
+  <div id="view-categories" class="view-panel">
+    <div class="chip-grid" id="chipGrid"></div>
+    <div class="grid" id="catGrid"></div>
+  </div>
+
+  <!-- TOP CHARTS VIEW -->
+  <div id="view-top" class="view-panel">
+    <div class="section"><div class="section-head"><h2>Top Charts</h2></div></div>
+    <div class="grid" id="topGrid"></div>
+  </div>
+
+  <!-- ACCOUNT VIEW -->
+  <div id="view-account" class="view-panel">
+    <div class="section">
+      <div class="section-head"><h2>Account</h2></div>
+      <p style="color:var(--text-dim);font-size:14px;line-height:1.6;">
+        Tum anonymous ho — login ki zaroorat nahi. Har download aur rating isi device se count hoti hai.
+      </p>
+      <p style="color:var(--text-dim);font-size:12.5px;">Device ID: <span id="uidText">connecting…</span></p>
+      <p style="margin-top:18px;"><a href="admin.html" style="color:var(--accent);font-weight:600;">Admin panel kholo →</a></p>
+    </div>
+  </div>
+
+  <!-- MY APPS VIEW -->
+  <div id="view-myapps" class="view-panel">
+    <div class="section"><div class="section-head"><h2>My Apps</h2></div></div>
+    <div class="grid" id="myAppsGrid"></div>
+    <div class="empty" id="myAppsEmpty" style="display:none;">
+      <p>Abhi tak koi app install nahi ki<br><span style="font-size:12.5px;">Jab bhi koi app download karoge, wo yahan dikhegi</span></p>
+    </div>
+  </div>
+
+</main>
+
+<nav class="bottomnav">
+  <button data-nav="home" class="active"><span class="bn-icon">🧩</span><span class="bn-label">Apps</span></button>
+  <button data-nav="categories"><span class="bn-icon">🗂️</span><span class="bn-label">Categories</span></button>
+  <button data-nav="top"><span class="bn-icon">📈</span><span class="bn-label">Top Charts</span></button>
+  <button data-nav="account"><span class="bn-icon">👤</span><span class="bn-label">Account</span></button>
+</nav>
+
+<!-- App detail modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-topbar">
+      <button id="closeModal">←</button>
+      <div class="side">
+        <button>🔍</button>
+        <button>⋮</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-head">
+        <img id="mIcon" src="" alt="">
+        <div>
+          <h2 id="mName"></h2>
+          <div class="dev" id="mCat"></div>
+          <div class="sub" id="mSub"></div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="top" id="mRatingTop">— <span class="star">★</span></div>
+          <div class="bottom" id="mRatingBottom">No ratings</div>
+        </div>
+        <div class="stat">
+          <div class="top" id="mDownloads">—</div>
+          <div class="bottom">Downloads</div>
+        </div>
+        <div class="stat">
+          <div class="top" id="mVersion">—</div>
+          <div class="bottom">Version</div>
+        </div>
+      </div>
+
+      <button class="btn" id="downloadBtn">Install</button>
+
+      <div class="hrow" id="mScreens" style="padding:20px 0 6px;margin:0 -22px;padding-left:22px;padding-right:22px;"></div>
+
+      <div class="modal-desc" id="mWhatsNew" style="display:none;background:#fff3e0;color:#e65100;border-radius:10px;padding:10px 12px;margin:14px 0 0;font-size:13px;"></div>
+
+      <div class="sect-head"><h3>About this game</h3><span class="arrow">›</span></div>
+      <div class="modal-desc" id="mDesc"></div>
+      <div class="chip-row">
+        <span class="info-chip" id="mCatVal">General</span>
+        <span class="info-chip" id="mSize">—</span>
+      </div>
+
+      <div class="sect-head"><h3>Ratings &amp; reviews</h3><span class="arrow">›</span></div>
+      <div class="rr-wrap">
+        <div class="rr-score">
+          <div class="num" id="rrNum">—</div>
+          <div class="stars" id="rrStars">☆☆☆☆☆</div>
+          <div class="count" id="rrCount">0 reviews</div>
+        </div>
+        <div class="rr-bars" id="rrBars"></div>
+      </div>
+
+      <div class="rate-row">
+        <span class="rate-label">Rate this app:</span>
+        <div class="star-input" id="starInput">
+          <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, signInAnonymously, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, onSnapshot, doc, getDoc, getDocs, setDoc, updateDoc,
+  increment, query, orderBy, where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDCH98RmJZIcpRo4CdFMubH6R_180GhOI",
+  authDomain: "sahil-4db34.firebaseapp.com",
+  projectId: "sahil-4db34",
+  storageBucket: "sahil-4db34.firebasestorage.app",
+  messagingSenderId: "113728963521",
+  appId: "1:113728963521:web:121f7acf027742379b6540",
+  measurementId: "G-RGHR72ZJF9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUid = null;
+let allApps = [];
+let activeCategory = "All";
+let activeNav = "home";
+let currentAppId = null;
+let currentRating = 0;
+
+const $ = (id) => document.getElementById(id);
+const toast = $('toast');
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 2200);
+}
+
+// ---------- Auth (anonymous, no signup needed) ----------
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    currentUid = user.uid;
+    $('uidText').textContent = user.uid.slice(0,10) + '…';
+  } else {
+    signInAnonymously(auth).catch(err => console.error(err));
+  }
+});
+
+// ---------- Site config (logo + banner), stored directly in Firestore ----------
+onSnapshot(doc(db, "config", "site"), (snap) => {
+  if(!snap.exists()) return;
+  const cfg = snap.data();
+  if(cfg.logoBase64){
+    $('headerLogo').innerHTML = `<img src="${cfg.logoBase64}">`;
+    $('drawerLogo').innerHTML = `<img src="${cfg.logoBase64}">`;
+  }
+  if(cfg.bannerImageBase64){
+    $('promoBanner').style.backgroundImage = `linear-gradient(120deg, rgba(0,0,0,.15), rgba(0,0,0,.35)), url(${cfg.bannerImageBase64})`;
+  }
+  if(cfg.bannerTitle) $('bannerTitle').textContent = cfg.bannerTitle;
+  if(cfg.bannerSubtitle) $('bannerSub').textContent = cfg.bannerSubtitle;
+});
+
+// ---------- Apps feed ----------
+const appsQuery = query(collection(db, "apps"), orderBy("createdAt", "desc"));
+onSnapshot(appsQuery, (snap) => {
+  allApps = [];
+  snap.forEach(d => allApps.push({ id: d.id, ...d.data() }));
+  buildCategoryChips();
+  renderAll();
+}, (err) => console.error(err));
+
+function avgRating(a){ return a.ratingCount ? a.ratingSum / a.ratingCount : 0; }
+function starsGlyph(avg){
+  const full = Math.round(avg);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
+}
+function starLabel(a){
+  const avg = avgRating(a);
+  return a.ratingCount ? `${avg.toFixed(1)} <span class="star">★</span>` : 'New';
+}
+function iconSrc(a){ return a.iconBase64 || a.iconUrl || ''; }
+
+// ---------- Local "installed version" tracking ----------
+// Browser can't actually query which APKs are installed on the device (Android
+// blocks that for privacy), so we approximate it: remember the version the
+// user downloaded last time, on this device, and compare with the latest.
+function getInstalledVersion(appId){ return localStorage.getItem('installed_' + appId); }
+function setInstalledVersion(appId, version){ localStorage.setItem('installed_' + appId, version); }
+function installStatus(a){
+  const installed = getInstalledVersion(a.id);
+  if(!installed) return { label: 'Install', state: 'new' };
+  if(installed === (a.version || '')) return { label: 'Installed — Open again', state: 'same' };
+  return { label: `Update available (v${a.version})`, state: 'update' };
+}
+
+function renderUpdatesBanner(){
+  const updatable = allApps.filter(a => installStatus(a).state === 'update');
+  const box = $('updatesBanner');
+  if(!updatable.length){ box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  $('updatesCount').textContent = `${updatable.length} update${updatable.length > 1 ? 's' : ''} available`;
+  $('updatesList').innerHTML = updatable.map(a => `
+    <div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:8px 10px;">
+      <img src="${iconSrc(a)}" style="width:38px;height:38px;border-radius:9px;object-fit:cover;flex-shrink:0;" onerror="this.style.opacity=0">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13.5px;font-weight:500;">${a.name}</div>
+        <div style="font-size:11.5px;color:var(--text-dim);">v${a.version} update ready</div>
+      </div>
+      <button data-id="${a.id}" class="bannerUpdateBtn" style="background:#ff9800;color:#fff;border:none;border-radius:20px;padding:8px 16px;font-weight:700;font-size:12.5px;cursor:pointer;">Update</button>
+    </div>
+  `).join('');
+  $('updatesList').querySelectorAll('.bannerUpdateBtn').forEach(btn => {
+    btn.onclick = () => triggerInstall(btn.dataset.id);
+  });
+}
+
+function triggerInstall(appId){
+  const a = allApps.find(x => x.id === appId);
+  if(!a || !a.apkUrl){ showToast("Download link nahi mila"); return; }
+  const ok = confirm(`"${a.name}" ko v${a.version} pe update karna hai?\nAPK download hoga — download hone ke baad usse khol ke install karo.`);
+  if(!ok) return;
+  updateDoc(doc(db, "apps", appId), { downloads: increment(1) }).catch(e => console.error(e));
+  const link = document.createElement('a');
+  link.href = a.apkUrl; link.download = (a.name || 'app') + '.apk';
+  document.body.appendChild(link); link.click(); link.remove();
+  setInstalledVersion(a.id, a.version || '');
+  showToast("Update download ho gaya — install karne ke liye APK file kholo");
+  renderUpdatesBanner();
+  renderFeed();
+  renderMyAppsView();
+}
+
+function matchesSearch(a, term){
+  return !term || (a.name || '').toLowerCase().includes(term);
+}
+
+function renderAll(){
+  renderUpdatesBanner();
+  renderNewRow();
+  renderFeed();
+  renderCategoriesView();
+  renderTopView();
+  renderMyAppsView();
+}
+
+function renderMyAppsView(){
+  const list = allApps.filter(a => !!getInstalledVersion(a.id));
+  const grid = $('myAppsGrid');
+  const empty = $('myAppsEmpty');
+  if(!grid) return;
+  if(!list.length){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = list.map(a => {
+    const st = installStatus(a);
+    return `
+    <div class="grow" data-id="${a.id}">
+      <img src="${iconSrc(a)}" onerror="this.style.opacity=0" loading="lazy">
+      <div class="info">
+        <div class="name">${a.name}</div>
+        <div class="cat">${st.state === 'update' ? '<span style="color:var(--accent);font-weight:700;">Update available</span>' : 'Installed'}</div>
+      </div>
+      <div class="rating">${starLabel(a)}</div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.grow').forEach(el => el.onclick = () => openModal(el.dataset.id));
+}
+
+function renderNewRow(){
+  const row = $('newRow');
+  const items = [...allApps].slice(0, 10);
+  row.innerHTML = items.map(a => `
+    <div class="hcard" data-id="${a.id}">
+      <img class="icon" src="${iconSrc(a)}" onerror="this.style.opacity=0">
+      <div class="name">${a.name}</div>
+      <div class="rating">${starLabel(a)}</div>
+    </div>
+  `).join('');
+  row.querySelectorAll('.hcard').forEach(el => el.onclick = () => openModal(el.dataset.id));
+}
+
+function renderFeed(){
+  const term = $('searchInput').value.trim().toLowerCase();
+  const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'foryou';
+  let list = allApps.filter(a => matchesSearch(a, term));
+
+  let title = 'Suggested for you';
+  if(activeTab === 'top'){ list = [...list].sort((a,b)=> (b.downloads||0)-(a.downloads||0)); title = 'Top Charts'; }
+  else if(activeTab === 'new'){ title = 'New apps'; }
+  else if(activeTab === 'categories'){
+    // handled by categories view, but still show all here
+    title = 'Suggested for you';
+  }
+
+  $('feedTitle').textContent = title;
+  const grid = $('feedGrid');
+  $('emptyState').style.display = list.length ? 'none' : 'block';
+  grid.innerHTML = list.map(a => `
+    <div class="grow" data-id="${a.id}">
+      <img src="${iconSrc(a)}" onerror="this.style.opacity=0">
+      <div class="info">
+        <div class="name">${a.name}</div>
+        <div class="cat">${a.category || 'General'}${installStatus(a).state === 'update' ? ' · <span style="color:var(--accent);font-weight:700;">Update</span>' : ''}</div>
+      </div>
+      <div class="rating">${starLabel(a)}</div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.grow').forEach(el => el.onclick = () => openModal(el.dataset.id));
+}
+
+function buildCategoryChips(){
+  const cats = ["All", ...new Set(allApps.map(a => a.category).filter(Boolean))];
+  $('chipGrid').innerHTML = cats.map(c => `<button class="cat-chip ${c===activeCategory?'active':''}" data-cat="${c}">${c}</button>`).join('');
+  $('chipGrid').querySelectorAll('.cat-chip').forEach(el => {
+    el.onclick = () => { activeCategory = el.dataset.cat; buildCategoryChips(); renderCategoriesView(); };
+  });
+}
+
+function renderCategoriesView(){
+  const list = activeCategory === 'All' ? allApps : allApps.filter(a => a.category === activeCategory);
+  const grid = $('catGrid');
+  grid.innerHTML = list.map(a => `
+    <div class="grow" data-id="${a.id}">
+      <img src="${iconSrc(a)}" onerror="this.style.opacity=0">
+      <div class="info">
+        <div class="name">${a.name}</div>
+        <div class="cat">${a.category || 'General'}</div>
+      </div>
+      <div class="rating">${starLabel(a)}</div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.grow').forEach(el => el.onclick = () => openModal(el.dataset.id));
+}
+
+function renderTopView(){
+  const list = [...allApps].sort((a,b)=> (b.downloads||0)-(a.downloads||0)).slice(0, 30);
+  const grid = $('topGrid');
+  grid.innerHTML = list.map((a,i) => `
+    <div class="grow" data-id="${a.id}">
+      <div class="rank">${i+1}</div>
+      <img src="${iconSrc(a)}" onerror="this.style.opacity=0">
+      <div class="info">
+        <div class="name">${a.name}</div>
+        <div class="cat">${a.downloads||0} downloads</div>
+      </div>
+      <div class="rating">${starLabel(a)}</div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.grow').forEach(el => el.onclick = () => openModal(el.dataset.id));
+}
+
+$('searchInput').addEventListener('input', renderFeed);
+
+// ---------- Tabs ----------
+$('tabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('.tab');
+  if(!btn) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  if(btn.dataset.tab === 'categories'){ setNav('categories'); }
+  else if(btn.dataset.tab === 'top'){ setNav('top'); renderFeed(); }
+  else { setNav('home'); renderFeed(); }
+});
+
+// ---------- Bottom nav + drawer nav ----------
+function setNav(name){
+  activeNav = name;
+  ['home','categories','top','account','myapps'].forEach(v => {
+    $('view-' + v).classList.toggle('active', v === name);
+  });
+  document.querySelectorAll('.bottomnav button').forEach(b => b.classList.toggle('active', b.dataset.nav === name));
+  if(name === 'myapps') renderMyAppsView();
+  closeDrawer();
+}
+document.querySelectorAll('.bottomnav [data-nav]').forEach(b => b.onclick = () => setNav(b.dataset.nav));
+document.querySelectorAll('.drawer [data-nav]').forEach(b => b.onclick = () => setNav(b.dataset.nav));
+
+// ---------- Drawer open/close ----------
+const drawer = $('drawer'); const scrim = $('scrim');
+function openDrawer(){ drawer.classList.add('open'); scrim.classList.add('open'); }
+function closeDrawer(){ drawer.classList.remove('open'); scrim.classList.remove('open'); }
+$('menuBtn').onclick = openDrawer;
+scrim.onclick = closeDrawer;
+
+// ---------- App detail modal ----------
+const overlay = $('overlay'); const starInput = $('starInput');
+async function openModal(appId){
+  const a = allApps.find(x => x.id === appId);
+  if(!a) return;
+  currentAppId = appId; currentRating = 0; paintStars(0);
+
+  $('mIcon').src = iconSrc(a);
+  $('mName').textContent = a.name;
+  $('mCat').textContent = 'Science World';
+  $('mSub').textContent = a.category || 'General';
+
+  const avg = avgRating(a);
+  $('mRatingTop').innerHTML = a.ratingCount ? `${avg.toFixed(1)} <span class="star">★</span>` : '— <span class="star">★</span>';
+  $('mRatingBottom').textContent = a.ratingCount ? `${a.ratingCount} review${a.ratingCount > 1 ? 's' : ''}` : 'No ratings';
+
+  const shots = Array.isArray(a.screenshots) ? a.screenshots : [];
+  $('mScreens').innerHTML = shots.map(src => `
+    <img src="${src}" style="width:130px;height:231px;flex-shrink:0;border-radius:10px;object-fit:cover;background:var(--surface-alt);border:1px solid var(--border);">
+  `).join('');
+  $('mScreens').style.display = shots.length ? 'flex' : 'none';
+
+  $('mDesc').textContent = a.description || '';
+  const wn = $('mWhatsNew');
+  if(a.whatsNew && a.whatsNew.trim()){
+    wn.style.display = 'block';
+    wn.innerHTML = `<strong>What's new:</strong> ${a.whatsNew}`;
+  } else {
+    wn.style.display = 'none';
+  }
+  $('mVersion').textContent = a.version || '—';
+  $('mSize').textContent = a.sizeMB ? a.sizeMB + ' MB' : 'Size unknown';
+  $('mDownloads').textContent = (a.downloads || 0) + '+';
+  $('mCatVal').textContent = a.category || 'General';
+  const st = installStatus(a);
+  $('downloadBtn').textContent = st.state === 'update' ? '⬆ ' + st.label : (st.state === 'same' ? '✓ ' + st.label : st.label);
+
+  // Ratings & reviews breakdown (real counts from the ratings collection)
+  $('rrNum').textContent = a.ratingCount ? avg.toFixed(1) : '—';
+  $('rrStars').textContent = a.ratingCount ? starsGlyph(avg) : '☆☆☆☆☆';
+  $('rrCount').textContent = `${a.ratingCount || 0} review${(a.ratingCount || 0) === 1 ? '' : 's'}`;
+  $('rrBars').innerHTML = [5,4,3,2,1].map(v => `
+    <div class="brow"><span style="width:10px;">${v}</span><div class="btrack"><div class="bfill" id="bfill${v}" style="width:0%;"></div></div></div>
+  `).join('');
+  try{
+    const rs = await getDocs(query(collection(db, "ratings"), where("appId", "==", appId)));
+    const counts = {1:0,2:0,3:0,4:0,5:0};
+    rs.forEach(d => { const v = d.data().value; if(counts[v] !== undefined) counts[v]++; });
+    const max = Math.max(1, ...Object.values(counts));
+    [1,2,3,4,5].forEach(v => { $('bfill'+v).style.width = (counts[v]/max*100) + '%'; });
+  }catch(e){ console.error(e); }
+
+  if(currentUid){
+    try{
+      const rDoc = await getDoc(doc(db, "ratings", appId + "_" + currentUid));
+      if(rDoc.exists()){ currentRating = rDoc.data().value; paintStars(currentRating); }
+    }catch(e){ console.error(e); }
+  }
+  overlay.classList.add('open');
+}
+$('closeModal').onclick = () => overlay.classList.remove('open');
+overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.remove('open'); });
+
+$('downloadBtn').onclick = async () => {
+  const a = allApps.find(x => x.id === currentAppId);
+  if(!a || !a.apkUrl){ showToast("Download link nahi mila"); return; }
+  const st = installStatus(a);
+  if(st.state === 'update'){
+    const ok = confirm(`"${a.name}" ko v${a.version} pe update karna hai?\nAPK download hoga — download hone ke baad usse khol ke install karo.`);
+    if(!ok) return;
+  }
+  try{ await updateDoc(doc(db, "apps", currentAppId), { downloads: increment(1) }); }catch(e){ console.error(e); }
+  const link = document.createElement('a');
+  link.href = a.apkUrl; link.download = (a.name || 'app') + '.apk';
+  document.body.appendChild(link); link.click(); link.remove();
+  setInstalledVersion(a.id, a.version || '');
+  const st2 = installStatus(a);
+  $('downloadBtn').textContent = '✓ ' + st2.label.replace('Update available', 'Installed');
+  renderUpdatesBanner();
+  renderFeed();
+  renderMyAppsView();
+  showToast("Download shuru ho gaya");
+};
+
+function paintStars(v){
+  [...starInput.children].forEach(s => s.classList.toggle('filled', parseInt(s.dataset.v) <= v));
+}
+starInput.addEventListener('click', async (e) => {
+  const v = parseInt(e.target.dataset.v);
+  if(!v || !currentUid || !currentAppId) return;
+  const prev = currentRating; currentRating = v; paintStars(v);
+  try{
+    const ratingRef = doc(db, "ratings", currentAppId + "_" + currentUid);
+    const appRef = doc(db, "apps", currentAppId);
+    const existing = await getDoc(ratingRef);
+    if(existing.exists()){
+      const oldVal = existing.data().value;
+      await setDoc(ratingRef, { appId: currentAppId, uid: currentUid, value: v, updatedAt: Date.now() });
+      await updateDoc(appRef, { ratingSum: increment(v - oldVal) });
+    } else {
+      await setDoc(ratingRef, { appId: currentAppId, uid: currentUid, value: v, updatedAt: Date.now() });
+      await updateDoc(appRef, { ratingSum: increment(v), ratingCount: increment(1) });
+    }
+    showToast("Rating save ho gayi");
+  }catch(err){
+    console.error(err); currentRating = prev; paintStars(prev);
+    showToast("Rating save nahi ho payi");
+  }
+});
+</script>
+</body>
+</html>

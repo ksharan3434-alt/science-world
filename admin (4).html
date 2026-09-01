@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vidya Store — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1B2D; --bg-soft:#14223A; --card:#182A45; --border:#2A3B57;
+    --text:#E8ECF3; --text-dim:#9BAAC4; --amber:#F2A93B; --teal:#4FB0A5; --danger:#E06B6B;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;}
+  h1,h2,.display{font-family:'Fraunces',serif;font-weight:600;}
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 32px;border-bottom:1px solid var(--border);background:var(--bg-soft);
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand .mark{width:36px;height:36px;border-radius:9px;background:linear-gradient(155deg,var(--amber),#B77E23);
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;color:#1a1204;}
+  .brand .name{font-family:'Fraunces',serif;font-size:19px;}
+  a.back{color:var(--text-dim);font-size:13px;text-decoration:none;}
+
+  main{max-width:900px;margin:0 auto;padding:40px 24px 80px;}
+
+  /* Login card */
+  .auth-card{
+    max-width:380px;margin:60px auto;background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);padding:32px;
+  }
+  .auth-card h2{margin:0 0 6px;}
+  .auth-card p{color:var(--text-dim);font-size:13.5px;margin:0 0 22px;}
+  label{display:block;font-size:13px;color:var(--text-dim);margin:14px 0 6px;}
+  input, textarea, select{
+    width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--border);
+    background:var(--bg);color:var(--text);font-family:inherit;font-size:14px;
+  }
+  textarea{resize:vertical;min-height:80px;}
+  .btn{
+    width:100%;margin-top:20px;padding:12px;border-radius:10px;border:none;
+    background:var(--amber);color:#1a1204;font-weight:700;font-size:14.5px;cursor:pointer;
+  }
+  .btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:600;}
+  .btn.danger{background:var(--danger);color:#2a0808;}
+  .btn:disabled{opacity:.5;}
+  .error-msg{color:var(--danger);font-size:13px;margin-top:10px;min-height:16px;}
+  .link-btn{background:none;border:none;color:var(--teal);font-size:13px;cursor:pointer;padding:0;margin-top:14px;}
+
+  /* Dashboard */
+  #dashboard{display:none;}
+  .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:12px;}
+  .top-row h1{margin:0;font-size:24px;}
+  .signout{font-size:13px;color:var(--text-dim);background:none;border:1px solid var(--border);padding:8px 14px;border-radius:100px;cursor:pointer;}
+
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;}
+  .panel h2{margin:0 0 4px;font-size:18px;}
+  .panel .sub{color:var(--text-dim);font-size:13px;margin:0 0 18px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .progress{height:6px;background:var(--bg);border-radius:6px;overflow:hidden;margin-top:10px;display:none;}
+  .progress .bar{height:100%;background:var(--teal);width:0%;transition:width .2s ease;}
+
+  .app-list{display:flex;flex-direction:column;gap:10px;}
+  .app-row{
+    display:flex;align-items:center;gap:14px;padding:12px;border:1px solid var(--border);
+    border-radius:12px;background:var(--bg-soft);
+  }
+  .app-row img{width:44px;height:44px;border-radius:10px;object-fit:cover;background:var(--bg);}
+  .app-row .info{flex:1;min-width:0;}
+  .app-row .info .n{font-weight:600;font-size:14.5px;}
+  .app-row .info .m{font-size:12px;color:var(--text-dim);}
+  .app-row .actions{display:flex;gap:8px;}
+  .app-row .actions button{
+    font-size:12.5px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);
+    background:transparent;color:var(--text);cursor:pointer;
+  }
+  .app-row .actions button.danger{color:var(--danger);border-color:#4a2727;}
+
+  .not-admin{
+    max-width:420px;margin:80px auto;text-align:center;color:var(--text-dim);
+  }
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--card);border:1px solid var(--border);color:var(--text);
+    padding:12px 20px;border-radius:100px;font-size:13.5px;z-index:100;
+    opacity:0;pointer-events:none;transition:opacity .2s ease;
+  }
+  .toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><div class="mark">V</div><div class="name">Vidya Store — Admin</div></div>
+  <a class="back" href="index.html">← Student site pe wapas</a>
+</header>
+
+<main>
+
+  <!-- Login -->
+  <div class="auth-card" id="loginCard">
+    <h2>Admin login</h2>
+    <p>Email aur password se sign in karo. Naya account pehli baar "Sign up" se banao.</p>
+    <label>Email</label>
+    <input type="email" id="loginEmail" placeholder="admin@example.com">
+    <label>Password</label>
+    <input type="password" id="loginPassword" placeholder="••••••••">
+    <button class="btn" id="loginBtn">Sign in</button>
+    <button class="link-btn" id="showSignup">Naya admin account banana hai? Sign up</button>
+    <div class="error-msg" id="loginError"></div>
+  </div>
+
+  <!-- Signup (hidden by default) -->
+  <div class="auth-card" id="signupCard" style="display:none;">
+    <h2>Admin account banao</h2>
+    <p>Signup ke baad Firebase console me "admins" collection me apna UID add karna hoga (README dekho) — tabhi upload permission milegi.</p>
+    <label>Email</label>
+    <input type="email" id="signupEmail" placeholder="admin@example.com">
+    <label>Password (6+ characters)</label>
+    <input type="password" id="signupPassword" placeholder="••••••••">
+    <button class="btn" id="signupBtn">Sign up</button>
+    <button class="link-btn" id="showLogin">Pehle se account hai? Sign in</button>
+    <div class="error-msg" id="signupError"></div>
+  </div>
+
+  <!-- Not an admin -->
+  <div class="not-admin" id="notAdmin" style="display:none;">
+    <h2>Ye account admin nahi hai</h2>
+    <p>Login ho gaya hai lekin ye email upload/manage nahi kar sakta. Firebase console me "admins" collection me is user ka UID add karo.</p>
+    <p style="font-size:12px;">Your UID: <code id="uidShow"></code></p>
+    <button class="btn secondary" id="signOutFromNotAdmin" style="max-width:200px;margin:20px auto 0;">Sign out</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard">
+    <div class="top-row">
+      <h1>Apps manage karo</h1>
+      <button class="signout" id="signOutBtn">Sign out</button>
+    </div>
+
+    <div class="panel">
+      <h2>Site settings</h2>
+      <p class="sub">Logo aur banner seedha Firestore me save hote hain (chhoti size me) — Storage use nahi ho raha.</p>
+
+      <label>Site logo (chhoti image, jaise 200×200)</label>
+      <input type="file" id="sLogo" accept="image/*">
+      <div id="sLogoPreview" style="margin-top:8px;"></div>
+
+      <label>Banner image (optional, jaise 800px chaudi)</label>
+      <input type="file" id="sBanner" accept="image/*">
+      <div id="sBannerPreview" style="margin-top:8px;"></div>
+
+      <label>Banner title</label>
+      <input type="text" id="sBannerTitle" placeholder="Naye apps ka khazana">
+
+      <label>Banner subtitle</label>
+      <input type="text" id="sBannerSub" placeholder="Padhaai ke kaam ki har app, ek jagah">
+
+      <button class="btn" id="saveSiteBtn">Site settings save karo</button>
+      <div class="error-msg" id="siteError"></div>
+    </div>
+
+    <div class="panel">
+      <h2>App update publish karo</h2>
+      <p class="sub">Existing app ka naya version turant release karo — poora form bhare bina. Students ko turant "Update available" dikhega.</p>
+
+      <label>App chuno</label>
+      <select id="uAppSelect"><option value="">-- app chuno --</option></select>
+
+      <div id="uCurrentInfo" style="display:none;margin-top:10px;font-size:13px;color:var(--text-dim);">
+        Live version: <strong id="uCurrentVersion">—</strong>
+      </div>
+
+      <label>Naya version (e.g. 1.3.0)</label>
+      <input type="text" id="uNewVersion" placeholder="1.3.0">
+
+      <label>Naya APK link (optional — sirf agar APK file badli hai)</label>
+      <input type="url" id="uApkUrl" placeholder="https://raw.githubusercontent.com/user/repo/main/apks/app.apk">
+
+      <label>Is update me kya naya hai (What's new)</label>
+      <textarea id="uWhatsNew" placeholder="e.g. Bug fixes, naya chapter add hua"></textarea>
+
+      <button class="btn" id="publishUpdateBtn">Update publish karo</button>
+      <div class="error-msg" id="updateError"></div>
+    </div>
+
+    <div class="panel">
+      <h2 id="formTitle">Nayi app add karo</h2>
+      <p class="sub">Icon aur APK dono upload karo. Update karne ke liye list se "Edit" dabao.</p>
+
+      <label>App ka naam</label>
+      <input type="text" id="fName" placeholder="e.g. Ganit Practice">
+
+      <label>Category</label>
+      <input type="text" id="fCategory" placeholder="e.g. Study, Exam Prep, Utility">
+
+      <label>Description</label>
+      <textarea id="fDesc" placeholder="App kis kaam ki hai, short me likho"></textarea>
+
+      <div class="row2">
+        <div>
+          <label>Version (e.g. 1.2.0)</label>
+          <input type="text" id="fVersion" placeholder="1.0.0">
+        </div>
+        <div>
+          <label>Size (MB, optional)</label>
+          <input type="number" id="fSize" placeholder="12">
+        </div>
+      </div>
+
+      <label>App icon (image chuno — seedha Firestore me save hoga)</label>
+      <input type="file" id="fIcon" accept="image/*">
+      <div id="fIconPreview" style="margin-top:8px;"></div>
+
+      <label>APK download link (GitHub raw URL)</label>
+      <input type="url" id="fApkUrl" placeholder="https://raw.githubusercontent.com/user/repo/main/apks/app.apk">
+      <p class="sub" style="margin:6px 0 0;">APK file Firestore me fit nahi hoti (bahut badi hoti hai), isliye ye GitHub se link karo — icon chhota hone se seedha save ho jaata hai.</p>
+
+      <label>Screenshots (Play Store jaisa — kam se kam 5 chuno, ek saath select kar sakte ho)</label>
+      <input type="file" id="fScreens" accept="image/*" multiple>
+      <p class="sub" style="margin:6px 0 0;" id="screensCount">Abhi 0 screenshot(s) chuni gayi hain — kam se kam 5 zaroori hain.</p>
+      <div id="fScreensPreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
+
+      <button class="btn" id="saveBtn">App save karo</button>
+      <button class="btn secondary" id="cancelEditBtn" style="display:none;">Edit cancel karo</button>
+      <div class="error-msg" id="formError"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Tumhari apps</h2>
+      <p class="sub" id="appCount"></p>
+      <div class="app-list" id="appList"></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc,
+  onSnapshot, query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyBDCH98RmJZIcpRo4CdFMubH6R_180GhOI",
+  authDomain: "sahil-4db34.firebaseapp.com",
+  projectId: "sahil-4db34",
+  storageBucket: "sahil-4db34.firebasestorage.app",
+  messagingSenderId: "113728963521",
+  appId: "1:113728963521:web:121f7acf027742379b6540",
+  measurementId: "G-RGHR72ZJF9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const loginCard = document.getElementById('loginCard');
+const signupCard = document.getElementById('signupCard');
+const notAdmin = document.getElementById('notAdmin');
+const dashboard = document.getElementById('dashboard');
+const toast = document.getElementById('toast');
+
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 2400);
+}
+
+document.getElementById('showSignup').onclick = () => { loginCard.style.display='none'; signupCard.style.display='block'; };
+document.getElementById('showLogin').onclick = () => { signupCard.style.display='none'; loginCard.style.display='block'; };
+
+document.getElementById('loginBtn').onclick = async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = "";
+  try{
+    await signInWithEmailAndPassword(auth, email, password);
+  }catch(e){
+    errEl.textContent = "Login fail: " + e.message;
+  }
+};
+
+document.getElementById('signupBtn').onclick = async () => {
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const errEl = document.getElementById('signupError');
+  errEl.textContent = "";
+  try{
+    await createUserWithEmailAndPassword(auth, email, password);
+    showToast("Account ban gaya. Ab UID ko admins collection me add karo.");
+  }catch(e){
+    errEl.textContent = "Signup fail: " + e.message;
+  }
+};
+
+document.getElementById('signOutBtn').onclick = () => signOut(auth);
+document.getElementById('signOutFromNotAdmin').onclick = () => signOut(auth);
+
+let currentUser = null;
+let editingAppId = null;
+let unsubscribeApps = null;
+let latestApps = [];
+
+// ---------- Helper: resize an image file and return a compact base64 string ----------
+function fileToResizedBase64(file, maxDim, quality){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if(width > height && width > maxDim){ height = Math.round(height * (maxDim/width)); width = maxDim; }
+        else if(height > maxDim){ width = Math.round(width * (maxDim/height)); height = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ---------- Site settings (logo + banner) ----------
+const sLogo = document.getElementById('sLogo');
+const sBanner = document.getElementById('sBanner');
+const sBannerTitle = document.getElementById('sBannerTitle');
+const sBannerSub = document.getElementById('sBannerSub');
+const saveSiteBtn = document.getElementById('saveSiteBtn');
+const siteError = document.getElementById('siteError');
+let siteLogoBase64 = null, siteBannerBase64 = null;
+
+async function loadSiteSettings(){
+  try{
+    const snap = await getDoc(doc(db, "config", "site"));
+    if(snap.exists()){
+      const cfg = snap.data();
+      sBannerTitle.value = cfg.bannerTitle || "";
+      sBannerSub.value = cfg.bannerSubtitle || "";
+      if(cfg.logoBase64){
+        siteLogoBase64 = cfg.logoBase64;
+        document.getElementById('sLogoPreview').innerHTML = `<img src="${cfg.logoBase64}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;">`;
+      }
+      if(cfg.bannerImageBase64){
+        siteBannerBase64 = cfg.bannerImageBase64;
+        document.getElementById('sBannerPreview').innerHTML = `<img src="${cfg.bannerImageBase64}" style="width:100%;max-width:280px;border-radius:12px;object-fit:cover;">`;
+      }
+    }
+  }catch(e){ console.error(e); }
+}
+
+sLogo.onchange = async () => {
+  if(!sLogo.files.length) return;
+  siteLogoBase64 = await fileToResizedBase64(sLogo.files[0], 200, 0.85);
+  document.getElementById('sLogoPreview').innerHTML = `<img src="${siteLogoBase64}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;">`;
+};
+sBanner.onchange = async () => {
+  if(!sBanner.files.length) return;
+  siteBannerBase64 = await fileToResizedBase64(sBanner.files[0], 800, 0.75);
+  document.getElementById('sBannerPreview').innerHTML = `<img src="${siteBannerBase64}" style="width:100%;max-width:280px;border-radius:12px;object-fit:cover;">`;
+};
+
+saveSiteBtn.onclick = async () => {
+  siteError.textContent = "";
+  saveSiteBtn.disabled = true; saveSiteBtn.textContent = "Save ho raha hai…";
+  try{
+    const data = {
+      bannerTitle: sBannerTitle.value.trim(),
+      bannerSubtitle: sBannerSub.value.trim(),
+    };
+    if(siteLogoBase64) data.logoBase64 = siteLogoBase64;
+    if(siteBannerBase64) data.bannerImageBase64 = siteBannerBase64;
+    await setDoc(doc(db, "config", "site"), data, { merge: true });
+    showToast("Site settings save ho gayi");
+  }catch(e){
+    console.error(e);
+    siteError.textContent = "Save nahi hua: " + e.message;
+  }finally{
+    saveSiteBtn.disabled = false; saveSiteBtn.textContent = "Site settings save karo";
+  }
+};
+
+onAuthStateChanged(auth, async (user) => {
+  loginCard.style.display = 'none';
+  signupCard.style.display = 'none';
+  notAdmin.style.display = 'none';
+  dashboard.style.display = 'none';
+
+  if(!user){
+    currentUser = null;
+    loginCard.style.display = 'block';
+    if(unsubscribeApps) unsubscribeApps();
+    return;
+  }
+
+  currentUser = user;
+
+  // check admin status
+  try{
+    const adminDoc = await getDoc(doc(db, "admins", user.uid));
+    if(adminDoc.exists() || user.email === 'sahil@gmail.com'){
+      dashboard.style.display = 'block';
+      listenApps();
+      loadSiteSettings();
+    } else {
+      document.getElementById('uidShow').textContent = user.uid;
+      notAdmin.style.display = 'block';
+    }
+  }catch(e){
+    console.error(e);
+    document.getElementById('uidShow').textContent = user.uid;
+    notAdmin.style.display = 'block';
+  }
+});
+
+// ---- Dashboard: list apps ----
+const appList = document.getElementById('appList');
+const appCount = document.getElementById('appCount');
+
+function listenApps(){
+  const q = query(collection(db, "apps"), orderBy("createdAt", "desc"));
+  unsubscribeApps = onSnapshot(q, (snap) => {
+    const apps = [];
+    snap.forEach(d => apps.push({id:d.id, ...d.data()}));
+    appCount.textContent = apps.length + " app(s)";
+    latestApps = apps;
+    const uSel = document.getElementById('uAppSelect');
+    const prevSelected = uSel.value;
+    uSel.innerHTML = '<option value="">-- app chuno --</option>' +
+      apps.map(a => `<option value="${a.id}">${a.name} (v${a.version || '—'})</option>`).join('');
+    if(prevSelected && apps.some(a => a.id === prevSelected)) uSel.value = prevSelected;
+    appList.innerHTML = "";
+    apps.forEach(a => {
+      const row = document.createElement('div');
+      row.className = 'app-row';
+      row.innerHTML = `
+        <img src="${a.iconBase64||a.iconUrl||''}" alt="">
+        <div class="info">
+          <div class="n">${a.name}</div>
+          <div class="m">v${a.version||'—'} · ${a.downloads||0} downloads · ${a.category||'General'}</div>
+        </div>
+        <div class="actions">
+          <button data-act="edit">Edit</button>
+          <button data-act="delete" class="danger">Delete</button>
+        </div>
+      `;
+      row.querySelector('[data-act="edit"]').onclick = () => startEdit(a);
+      row.querySelector('[data-act="delete"]').onclick = () => deleteApp(a);
+      appList.appendChild(row);
+    });
+  });
+}
+
+// ---- Form handling ----
+const fName = document.getElementById('fName');
+const fCategory = document.getElementById('fCategory');
+const fDesc = document.getElementById('fDesc');
+const fVersion = document.getElementById('fVersion');
+const fSize = document.getElementById('fSize');
+const fIcon = document.getElementById('fIcon');
+const fIconPreview = document.getElementById('fIconPreview');
+const fApkUrl = document.getElementById('fApkUrl');
+const fScreens = document.getElementById('fScreens');
+const fScreensPreview = document.getElementById('fScreensPreview');
+const screensCount = document.getElementById('screensCount');
+const saveBtn = document.getElementById('saveBtn');
+const cancelEditBtn = document.getElementById('cancelEditBtn');
+const formTitle = document.getElementById('formTitle');
+const formError = document.getElementById('formError');
+let pendingIconBase64 = null;
+let editingIconBase64 = null;
+let currentScreenshots = [];
+const MIN_SCREENSHOTS = 5;
+
+fIcon.onchange = async () => {
+  if(!fIcon.files.length) return;
+  pendingIconBase64 = await fileToResizedBase64(fIcon.files[0], 200, 0.85);
+  fIconPreview.innerHTML = `<img src="${pendingIconBase64}" style="width:56px;height:56px;border-radius:12px;object-fit:cover;">`;
+};
+
+function renderScreensPreview(){
+  screensCount.textContent = `Abhi ${currentScreenshots.length} screenshot(s) chuni gayi hain — kam se kam ${MIN_SCREENSHOTS} zaroori hain.`;
+  screensCount.style.color = currentScreenshots.length >= MIN_SCREENSHOTS ? 'var(--text-dim)' : 'var(--danger)';
+  fScreensPreview.innerHTML = currentScreenshots.map((src, i) => `
+    <div style="position:relative;">
+      <img src="${src}" style="width:80px;height:142px;border-radius:8px;object-fit:cover;border:1px solid var(--border);">
+      <button type="button" data-i="${i}" class="removeScreen" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:none;background:var(--danger);color:#fff;cursor:pointer;font-size:12px;line-height:1;">✕</button>
+    </div>
+  `).join('');
+  fScreensPreview.querySelectorAll('.removeScreen').forEach(btn => {
+    btn.onclick = () => {
+      currentScreenshots.splice(Number(btn.dataset.i), 1);
+      renderScreensPreview();
+    };
+  });
+}
+
+fScreens.onchange = async () => {
+  if(!fScreens.files.length) return;
+  const files = [...fScreens.files];
+  for(const file of files){
+    const b64 = await fileToResizedBase64(file, 480, 0.6);
+    currentScreenshots.push(b64);
+  }
+  fScreens.value = "";
+  renderScreensPreview();
+};
+
+function resetForm(){
+  editingAppId = null;
+  fName.value = ""; fCategory.value = ""; fDesc.value = "";
+  fVersion.value = ""; fSize.value = ""; fApkUrl.value = "";
+  fIcon.value = ""; fIconPreview.innerHTML = "";
+  pendingIconBase64 = null; editingIconBase64 = null;
+  fScreens.value = ""; currentScreenshots = []; renderScreensPreview();
+  formTitle.textContent = "Nayi app add karo";
+  cancelEditBtn.style.display = "none";
+  formError.textContent = "";
+}
+
+function startEdit(a){
+  editingAppId = a.id;
+  fName.value = a.name || "";
+  fCategory.value = a.category || "";
+  fDesc.value = a.description || "";
+  fVersion.value = a.version || "";
+  fSize.value = a.sizeMB || "";
+  fApkUrl.value = a.apkUrl || "";
+  fIcon.value = "";
+  pendingIconBase64 = null;
+  editingIconBase64 = a.iconBase64 || a.iconUrl || null;
+  fIconPreview.innerHTML = editingIconBase64 ? `<img src="${editingIconBase64}" style="width:56px;height:56px;border-radius:12px;object-fit:cover;">` : "";
+  fScreens.value = "";
+  currentScreenshots = Array.isArray(a.screenshots) ? [...a.screenshots] : [];
+  renderScreensPreview();
+  formTitle.textContent = "Edit karo: " + a.name;
+  cancelEditBtn.style.display = "block";
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+cancelEditBtn.onclick = resetForm;
+
+saveBtn.onclick = async () => {
+  formError.textContent = "";
+  if(!fName.value.trim()){ formError.textContent = "App ka naam zaroori hai."; return; }
+  if(!editingAppId && !fApkUrl.value.trim()){ formError.textContent = "Nayi app ke liye APK link zaroori hai."; return; }
+  if(currentScreenshots.length < MIN_SCREENSHOTS){ formError.textContent = `Kam se kam ${MIN_SCREENSHOTS} screenshots chahiye (abhi ${currentScreenshots.length} hain).`; return; }
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Save ho raha hai…";
+
+  try{
+    const appId = editingAppId || doc(collection(db, "apps")).id;
+    const data = {
+      name: fName.value.trim(),
+      category: fCategory.value.trim() || "General",
+      description: fDesc.value.trim(),
+      version: fVersion.value.trim() || "1.0.0",
+      sizeMB: fSize.value ? Number(fSize.value) : null,
+      screenshots: currentScreenshots,
+      updatedAt: serverTimestamp(),
+    };
+
+    if(fApkUrl.value.trim()) data.apkUrl = fApkUrl.value.trim();
+    if(pendingIconBase64) data.iconBase64 = pendingIconBase64;
+
+    if(!editingAppId){
+      data.downloads = 0;
+      data.ratingSum = 0;
+      data.ratingCount = 0;
+      data.createdAt = serverTimestamp();
+    }
+
+    await setDoc(doc(db, "apps", appId), data, { merge: true });
+
+    showToast(editingAppId ? "App update ho gayi" : "App add ho gayi");
+    resetForm();
+  }catch(e){
+    console.error(e);
+    formError.textContent = "Save nahi hua: " + e.message;
+  }finally{
+    saveBtn.disabled = false;
+    saveBtn.textContent = "App save karo";
+  }
+};
+
+async function deleteApp(a){
+  if(!confirm(`"${a.name}" ko delete karna hai? Ye wapas nahi hoga.`)) return;
+  try{
+    await deleteDoc(doc(db, "apps", a.id));
+    showToast("App delete ho gayi");
+  }catch(e){
+    console.error(e);
+    showToast("Delete nahi hua: " + e.message);
+  }
+}
+
+// ---- Dedicated update publish flow ----
+const uAppSelect = document.getElementById('uAppSelect');
+const uCurrentInfo = document.getElementById('uCurrentInfo');
+const uCurrentVersion = document.getElementById('uCurrentVersion');
+const uNewVersion = document.getElementById('uNewVersion');
+const uApkUrl = document.getElementById('uApkUrl');
+const uWhatsNew = document.getElementById('uWhatsNew');
+const publishUpdateBtn = document.getElementById('publishUpdateBtn');
+const updateError = document.getElementById('updateError');
+
+uAppSelect.onchange = () => {
+  const a = latestApps.find(x => x.id === uAppSelect.value);
+  updateError.textContent = "";
+  if(!a){ uCurrentInfo.style.display = 'none'; uNewVersion.value = ""; uApkUrl.value = ""; uWhatsNew.value = ""; return; }
+  uCurrentInfo.style.display = 'block';
+  uCurrentVersion.textContent = a.version || '—';
+  uNewVersion.value = "";
+  uApkUrl.value = "";
+  uWhatsNew.value = "";
+};
+
+publishUpdateBtn.onclick = async () => {
+  updateError.textContent = "";
+  const a = latestApps.find(x => x.id === uAppSelect.value);
+  if(!a){ updateError.textContent = "Pehle app chuno."; return; }
+  const newVersion = uNewVersion.value.trim();
+  if(!newVersion){ updateError.textContent = "Naya version daalo."; return; }
+  if(newVersion === (a.version || '')){ updateError.textContent = "Ye to current version jaisa hi hai — students ko update nahi dikhega. Version badlo."; return; }
+
+  publishUpdateBtn.disabled = true;
+  publishUpdateBtn.textContent = "Publish ho raha hai…";
+  try{
+    const data = {
+      version: newVersion,
+      whatsNew: uWhatsNew.value.trim(),
+      updatedAt: serverTimestamp(),
+    };
+    if(uApkUrl.value.trim()) data.apkUrl = uApkUrl.value.trim();
+    await setDoc(doc(db, "apps", a.id), data, { merge: true });
+    showToast(`"${a.name}" v${newVersion} publish ho gaya`);
+    uNewVersion.value = ""; uApkUrl.value = ""; uWhatsNew.value = "";
+    uCurrentVersion.textContent = newVersion;
+  }catch(e){
+    console.error(e);
+    updateError.textContent = "Publish nahi hua: " + e.message;
+  }finally{
+    publishUpdateBtn.disabled = false;
+    publishUpdateBtn.textContent = "Update publish karo";
+  }
+};
+</script>
+</body>
+</html>
